@@ -1,15 +1,16 @@
-import { HttpException, Injectable } from '@nestjs/common';
+import { Injectable, HttpException } from '@nestjs/common';
+import { Publications } from '@prisma/client';
+import { PrismaService } from 'src/prisma/prisma.service';
 import { CreatePublicationDto } from './dto/create-publication.dto';
 import { UpdatePublicationDto } from './dto/update-publication.dto';
-import { PrismaService } from '../prisma/prisma.service';
-import { Publications as PublicationModel } from '@prisma/client';
+
 @Injectable()
 export class PublicationsRepository {
   constructor(private readonly prisma: PrismaService) {}
   // POST /publications
   async postPublication(
     createPublicationDto: CreatePublicationDto,
-  ): Promise<PublicationModel> {
+  ): Promise<Publications> {
     const result = this.prisma.publications.create({
       data: createPublicationDto,
     });
@@ -17,13 +18,13 @@ export class PublicationsRepository {
   }
 
   // GET /publications
-  async getAllPublications(): Promise<PublicationModel[]> {
+  async getAllPublications(): Promise<Publications[]> {
     const result = await this.prisma.publications.findMany({});
     return result;
   }
 
   // GET /publications/:id
-  async getPublicationById(id: number): Promise<PublicationModel> {
+  async getPublicationById(id: number): Promise<Publications> {
     const result = await this.prisma.publications.findUnique({
       where: { id },
     });
@@ -34,7 +35,7 @@ export class PublicationsRepository {
   async updatePublication(
     id: number,
     updatePublicationDto: UpdatePublicationDto,
-  ): Promise<PublicationModel> {
+  ): Promise<Publications> {
     const rows = await this.getPublicationById(id);
     if (!rows) {
       throw new HttpException('Not found', 404);

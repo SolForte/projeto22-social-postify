@@ -1,18 +1,18 @@
 import {
   Controller,
-  Get,
   Post,
   Body,
-  Param,
-  Delete,
   HttpException,
-  HttpCode,
-  Put,
+  Get,
   Query,
+  Param,
+  Put,
+  HttpCode,
+  Delete,
 } from '@nestjs/common';
-import { PublicationsService } from './publications.service';
 import { CreatePublicationDto } from './dto/create-publication.dto';
 import { UpdatePublicationDto } from './dto/update-publication.dto';
+import { PublicationsService } from './publications.service';
 
 @Controller('publications')
 export class PublicationsController {

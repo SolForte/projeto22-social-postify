@@ -13,11 +13,11 @@ import { PublicationsModule } from './publications/publications.module';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    PrismaModule,
     MediasModule,
     PostsModule,
     PublicationsModule,
     HelperModule,
+    PrismaModule,
   ],
   controllers: [AppController],
   providers: [AppService],
