@@ -1,7 +1,8 @@
-import { HttpException, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, HttpException, NotFoundException } from '@nestjs/common';
 import { CreateMediaDto } from './dto/create-media.dto';
 import { UpdateMediaDto } from './dto/update-media.dto';
 import { MediasRepository } from './medias.repository';
+
 @Injectable()
 export class MediasService {
   constructor(private readonly mediasRepository: MediasRepository) {}
@@ -14,17 +15,24 @@ export class MediasService {
     if (conflictCheck) {
       throw new HttpException('Conflict', 409);
     }
-    return await this.mediasRepository.postMedia(createMediaDto);
+    const result = await this.mediasRepository.postMedia(createMediaDto);
+    return { title: result.title, username: result.username };
   }
 
   // GET /medias
   async findAllMedias() {
-    return await this.mediasRepository.getAllMedias();
+    const result = await this.mediasRepository.getAllMedias();
+    return result.map((media) => ({
+      id: media.id,
+      title: media.title,
+      username: media.username,
+    }));
   }
 
   // GET /medias/:id
   async findMediaById(id: number) {
-    return await this.mediasRepository.getMediaById(id);
+    const result = await this.mediasRepository.getMediaById(id);
+    return [{ id: result.id, title: result.title, username: result.username }];
   }
 
   // PUT /medias/:id
@@ -48,7 +56,8 @@ export class MediasService {
         updateMediaDto.username = updateMediaDto.username;
       }
     }
-    return this.mediasRepository.updateMedia(id, updateMediaDto);
+    const result = await this.mediasRepository.updateMedia(id, updateMediaDto);
+    return [{ title: result.title, username: result.username }];
   }
 
   // DELETE /medias/:id
@@ -62,6 +71,6 @@ export class MediasService {
     if (constraintsCheck.length > 0) {
       throw new HttpException('Forbidden', 403);
     }
-    return await this.mediasRepository.deleteMedia(id);
+    await this.mediasRepository.deleteMedia(id);
   }
 }

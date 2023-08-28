@@ -1,17 +1,17 @@
 import {
   Controller,
   Post,
-  Get,
-  Put,
-  Delete,
   Body,
-  Param,
-  HttpCode,
   HttpException,
+  Get,
+  Param,
+  Put,
+  HttpCode,
+  Delete,
 } from '@nestjs/common';
-import { MediasService } from './medias.service';
 import { CreateMediaDto } from './dto/create-media.dto';
 import { UpdateMediaDto } from './dto/update-media.dto';
+import { MediasService } from './medias.service';
 
 @Controller('medias')
 export class MediasController {
@@ -31,7 +31,11 @@ export class MediasController {
 
   @Get()
   async findAll() {
-    return await this.mediasService.findAllMedias();
+    try {
+      return await this.mediasService.findAllMedias();
+    } catch (error) {
+      throw new HttpException(error.message, 500);
+    }
   }
 
   @Get(':id')
@@ -57,14 +61,11 @@ export class MediasController {
       throw new HttpException(error.message, 500);
     }
   }
-  @HttpCode(200)
+  @HttpCode(204)
   @Delete(':id')
   async remove(@Param('id') id: string) {
     try {
-      await this.mediasService.deleteMedia(+id);
-      return {
-        statusCode: 200,
-      };
+      return this.mediasService.deleteMedia(+id);
     } catch (error) {
       if (error.message === 'Not found') {
         throw new HttpException(error.message, 404);

@@ -1,6 +1,6 @@
 import { PartialType } from '@nestjs/mapped-types';
+import { IsNotEmpty, IsString, IsOptional } from 'class-validator';
 import { CreateMediaDto } from './create-media.dto';
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class UpdateMediaDto extends PartialType(CreateMediaDto) {
   @IsNotEmpty()
