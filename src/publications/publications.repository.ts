@@ -18,7 +18,7 @@ export class PublicationsRepository {
 
   // GET /publications
   async getAllPublications(): Promise<PublicationModel[]> {
-    const result = await this.prisma.publications.findMany();
+    const result = await this.prisma.publications.findMany({});
     return result;
   }
 

@@ -33,8 +33,33 @@ export class PublicationsService {
   }
 
   // GET /publications
-  async findAllPublications() {
+  async findAllPublications(query?: { published?: boolean; after?: string }) {
     const result = await this.publicationsRepository.getAllPublications();
+
+    if (query?.published) {
+      const published = result.filter(
+        (publication) => new Date(publication.date) > new Date(),
+      );
+      return published.map((publication) => ({
+        id: publication.id,
+        mediaId: publication.mediaId,
+        postid: publication.postId,
+        date: publication.date,
+      }));
+    }
+
+    if (query?.after) {
+      const after = result.filter(
+        (publication) => new Date(publication.date) > new Date(query.after),
+      );
+      return after.map((publication) => ({
+        id: publication.id,
+        mediaId: publication.mediaId,
+        postid: publication.postId,
+        date: publication.date,
+      }));
+    }
+
     return result.map((publication) => ({
       id: publication.id,
       mediaId: publication.mediaId,

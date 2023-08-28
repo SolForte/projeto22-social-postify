@@ -8,6 +8,7 @@ import {
   HttpException,
   HttpCode,
   Put,
+  Query,
 } from '@nestjs/common';
 import { PublicationsService } from './publications.service';
 import { CreatePublicationDto } from './dto/create-publication.dto';
@@ -27,17 +28,12 @@ export class PublicationsController {
   }
 
   @Get()
-  async findAll() {
-    try {
-      const publications = await this.publicationsService.findAllPublications();
-      return publications;
-    } catch (error) {
-      throw new HttpException(error.message, 500);
-    }
+  async findAll(@Query() query?: { published?: boolean; after?: string }) {
+    return this.publicationsService.findAllPublications(query);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: number) {
     try {
       return this.publicationsService.findPublicationById(+id);
     } catch (error) {
@@ -50,7 +46,7 @@ export class PublicationsController {
 
   @Put(':id')
   update(
-    @Param('id') id: string,
+    @Param('id') id: number,
     @Body() updatePublicationDto: UpdatePublicationDto,
   ) {
     try {
@@ -68,7 +64,7 @@ export class PublicationsController {
 
   @HttpCode(204)
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: number) {
     try {
       return this.publicationsService.deletePublication(+id);
     } catch (error) {

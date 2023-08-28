@@ -1,5 +1,4 @@
-import { Type } from 'class-transformer';
-import { IsNotEmpty, IsNumber } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreatePublicationDto {
   @IsNotEmpty()
@@ -11,6 +10,6 @@ export class CreatePublicationDto {
   postId: number;
 
   @IsNotEmpty()
-  @Type(() => Date)
-  date: Date;
+  @IsString()
+  date: string;
 }
