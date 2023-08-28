@@ -29,6 +29,13 @@ export class MediasService {
 
   // PUT /medias/:id
   async updateMedia(id: number, updateMediaDto: UpdateMediaDto) {
+    const conflictCheck = await this.mediasRepository.findMediaByUsername(
+      updateMediaDto.username,
+      updateMediaDto.title,
+    );
+    if (conflictCheck) {
+      throw new HttpException('Conflict', 409);
+    }
     const rows = await this.mediasRepository.getMediaById(id);
     if (!rows) {
       throw new NotFoundException();

@@ -35,9 +35,9 @@ export class MediasController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    const result = this.mediasService.findMediaById(+id);
-    if (!result && result === undefined) {
+  async findOne(@Param('id') id: string) {
+    const result = await this.mediasService.findMediaById(+id);
+    if (!result) {
       throw new HttpException('Not found', 404);
     }
     return result;
@@ -51,7 +51,9 @@ export class MediasController {
       if (error.message === 'Not found') {
         throw new HttpException(error.message, 404);
       }
-
+      if (error.message === 'Conflict') {
+        throw new HttpException(error.message, 409);
+      }
       throw new HttpException(error.message, 500);
     }
   }
